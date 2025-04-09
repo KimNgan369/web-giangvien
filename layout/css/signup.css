@@ -1,0 +1,145 @@
+:root {
+    --primary: #8E44AD;
+    --background: #F8F9FA;
+    --text: #343A40;
+    --accent: #FDCB6E;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.signup-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+h1 {
+    color: var(--text);
+    font-weight: 700;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+    margin-bottom: 25px;
+    color: var(--text);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #7D3C98;
+    border-color: #7D3C98;
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus {
+    background-color: var(--primary);
+    color: white;
+}
+
+.role-selector {
+    margin-bottom: 25px;
+}
+
+.role-selector .btn {
+    border-radius: 0;
+    width: 33.33%;
+}
+
+.role-selector .btn:first-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.role-selector .btn:last-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.active-role {
+    background-color: var(--primary) !important;
+    color: white !important;
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.form-select {
+    border: 1px solid #ced4da;
+    margin-bottom: 20px;
+}
+
+.date-selectors {
+    display: flex;
+    gap: 15px;
+}
+
+.link-primary {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.link-primary:hover {
+    text-decoration: underline;
+}
+
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.form-actions a {
+    margin: 8px 0;
+}
+
+.F-logo {
+    display: block;
+    margin: 0 auto 20px;
+    max-width: 100px;
+}
+
+.accent-bar {
+    height: 5px;
+    background-color: var(--accent);
+    margin-bottom: 25px;
+    border-radius: 8px;
+}
+
+.form-floating {
+    margin-bottom: 15px;
+}
+
+.btn-continue {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 20px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-continue:hover {
+    background-color: #7D3C98;
+}
