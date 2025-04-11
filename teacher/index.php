@@ -6,8 +6,6 @@ ob_start();
 if (isset($_SESSION["role"]) && ($_SESSION["role"] == 'teacher')) {
     
     //Nhúng kết nối CSDL
-    // include "models/pdo.php";
-    // include "models/products.php";
 
     include "view/header.php";
 
@@ -23,8 +21,8 @@ if (isset($_SESSION["role"]) && ($_SESSION["role"] == 'teacher')) {
                     unset($_SESSION['user_id']);
                     session_destroy();
                 }
-                header('location: login.php');
-                exit; // Thêm exit sau khi chuyển hướng để đảm bảo dừng việc thực thi mã
+                header('location: ../index.php');
+                exit; 
                 break;
 
             default:
