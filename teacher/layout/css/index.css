@@ -1,0 +1,317 @@
+:root {
+    --primary: #8E44AD;
+    --background: #F8F9FA;
+    --text: #343A40;
+    --accent: #FDCB6E;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+    background-color: #5649d1;
+    border-color: #5649d1;
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.text-primary {
+    color: var(--primary) !important;
+}
+
+.hero-section {
+    padding: 2rem 0 4rem;
+}
+
+.student-image-container {
+    position: relative;
+    border-radius: 15px;
+    transform: rotate(-5deg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 100%;
+    transition: transform 0.3s ease;
+}
+
+.student-image-container:hover {
+    transform: rotate(-3deg) scale(1.02);
+}
+
+.student-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.scribble-decoration {
+    position: absolute;
+    bottom: -20px;
+    right: -30px;
+    transform: rotate(10deg);
+    z-index: 1;
+}
+
+.logo-container {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-link {
+    color: var(--text);
+    font-weight: 500;
+}
+
+.dropdown-toggle::after {
+    display: inline-block;
+    margin-left: 0.255em;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+}
+
+.search-container {
+    width: 240px;
+}
+
+@media (max-width: 992px) {
+    .search-container {
+        width: 100%;
+        margin: 1rem 0;
+    }
+    
+    .hero-section {
+        text-align: center;
+    }
+    
+    .student-image-container {
+        margin: 0 auto 2rem;
+        transform: rotate(0);
+        max-width: 80%;
+    }
+    
+    .accent-star, .accent-square {
+        display: none;
+    }
+}
+
+
+
+.brand-text {
+    color: var(--primary);
+}
+
+.custom-btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.custom-btn-primary:hover {
+    background-color: #7d3c98;
+    border-color: #7d3c98;
+    color: white;
+}
+
+.btn-outline-primary {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+.navbar {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.category-label {
+    color: var(--primary);
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+}
+
+/* Teachers Section Styles */
+.teachers-section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    background-color: white;
+}
+
+.student-portraits {
+    height: 400px;
+    position: relative;
+}
+
+.portrait-circle {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.portrait-top {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+}
+
+.portrait-left {
+    bottom: 50px;
+    left: 0;
+    z-index: 1;
+}
+
+.portrait-right {
+    top: 120px;
+    right: 50px;
+    z-index: 2;
+}
+
+.bg-circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    z-index: -1;
+    top: 10px;
+    left: 10px;
+    opacity: 0.3;
+}
+
+.decorative-star {
+    position: absolute;
+    top: 40%;
+    right: 20%;
+    transform: rotate(15deg);
+}
+
+.decorative-circle {
+    position: absolute;
+    bottom: 35%;
+    left: 35%;
+}
+
+.decorative-scribble {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+/* Learners Section Styles */
+.learners-section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    background-color: var(--background);
+    position: relative;
+    overflow: hidden;
+}
+
+.learners-illustration {
+    height: 400px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.laptop-illustration {
+    width: 80%;
+    max-width: 400px;
+    position: relative;
+    z-index: 1;
+}
+
+.decorative-burst {
+    position: absolute;
+    top: 20%;
+    left: 30%;
+    z-index: 0;
+    transform: scale(0.8);
+}
+
+.decorative-triangle {
+    position: absolute;
+    top: 10%;
+    right: 15%;
+    transform: rotate(15deg);
+}
+
+.decorative-megaphone {
+    position: absolute;
+    bottom: 20%;
+    right: 10%;
+}
+
+.decorative-telescope {
+    position: absolute;
+    bottom: 15%;
+    left: 5%;
+}
+
+@media (max-width: 992px) {
+    .portrait-circle {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .student-portraits, .learners-illustration {
+        height: 350px;
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .portrait-circle {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .student-portraits {
+        height: 300px;
+    }
+}
+
+/* 
+footer */
+.social-icons a {
+    font-size: 1.2rem;
+    transition: opacity 0.2s;
+}
+
+.social-icons a:hover {
+    opacity: 0.8;
+}
+
+.text-accent {
+    color: var(--accent);
+}
+
+.bg-accent {
+    background-color: var(--accent);
+}
