@@ -8,7 +8,6 @@ include "view/header.php";
 //data cho trang chu 
 
 
-
 if (!isset($_GET['pg'])) {
     include "view/home.php";
 } else {

@@ -1,4 +1,3 @@
- <!-- Hero Section -->
  <section class="hero-section">
         <div class="container py-5">
             <div class="row align-items-center">
@@ -32,16 +31,7 @@
                     <p class="lead mb-4">
                         Nền giáo dục đẳng cấp thế giới dành cho bất kỳ ai, ở bất kỳ đâu.
                     </p>
-                    <div class="row mt-5">
-                        <div class="col-md-4 mb-3">
-                            <a href="#" class="btn btn-primary w-100 py-3">Học sinh</a>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <a href="#" class="btn btn-outline-primary w-100 py-3">Giáo Viên</a>
-                        </div>
-                    </div>
                 </div>
-
 
             </div>
         </div>
@@ -53,25 +43,23 @@
             <div class="row align-items-center">
                 <div class="col-lg-6">
                     <div class="student-portraits position-relative">
-                        <!-- Top student portrait -->
+                        
                         <div class="portrait-circle portrait-top">
                             <img src="layout/img/teacher1.jpg" alt="Student portrait" class="img-fluid rounded-circle">
                             <div class="bg-circle bg-success"></div>
                         </div>
                         
-                        <!-- Left student portrait -->
                         <div class="portrait-circle portrait-left">
                             <img src="layout/img/teacher2.jpg" alt="Student portrait" class="img-fluid rounded-circle">
                             <div class="bg-circle bg-info"></div>
                         </div>
                         
-                        <!-- Right student portrait -->
                         <div class="portrait-circle portrait-right">
                             <img src="layout/img/teacher4.jpg" alt="Student portrait" class="img-fluid rounded-circle">
                             <div class="bg-circle bg-warning"></div>
                         </div>
                         
-                        <!-- Decorative elements -->
+
                         <div class="decorative-star">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12 2L15 8L21 9L17 14L18 20L12 17L6 20L7 14L3 9L9 8L12 2Z" fill="#FDCB6E"/>
@@ -98,7 +86,6 @@
                         <div class="small text-uppercase fw-bold mb-2 category-label">GIÁO VIÊN</div>
                         <h2 class="display-5 fw-bold mb-4 text-dark">Tạo sự khác biệt trong lớp học và thu hút mọi học sinh.</h2>
                         <p class="mb-4">Chúng tôi giúp giáo viên hỗ trợ toàn bộ lớp học của mình. 90% giáo viên tại Việt Nam từng sử dụng For Student đều đánh giá hiệu quả.</p>
-                        <!-- <a href="#" class="btn custom-btn-primary">Giáo viên bắt đầu tại đây</a> -->
                     </div>
                 </div>
                 
@@ -149,7 +136,6 @@
                         <div class="small text-uppercase fw-bold mb-2 category-label">HỌC VIÊN VÀ SINH VIÊN</div>
                         <h2 class="display-5 fw-bold mb-4 text-dark">Bạn có thể học bất cứ điều gì.</h2>
                         <p class="mb-4">Xây dựng nền tảng kiến thức vững chắc về toán học, khoa học và nhiều lĩnh vực khác.</p>
-                        <!-- <a href="#" class="btn custom-btn-primary">Học viên bắt đầu tại đây</a> -->
                     </div>
                 </div>
                 
