@@ -68,7 +68,7 @@
                 </div>
                 
                 <div class="ms-auto d-flex align-items-center">
-                    <a href="#" class="btn btn-link text-dark me-2">Đăng Ký</a>
+                    <!-- <a href="#" class="btn btn-link text-dark me-2">Đăng Ký</a> -->
                     <a href="#" class="btn btn-primary">Đăng Nhập</a>
                 </div>
             </div>

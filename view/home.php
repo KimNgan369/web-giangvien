@@ -98,7 +98,7 @@
                         <div class="small text-uppercase fw-bold mb-2 category-label">GIÁO VIÊN</div>
                         <h2 class="display-5 fw-bold mb-4 text-dark">Tạo sự khác biệt trong lớp học và thu hút mọi học sinh.</h2>
                         <p class="mb-4">Chúng tôi giúp giáo viên hỗ trợ toàn bộ lớp học của mình. 90% giáo viên tại Việt Nam từng sử dụng For Student đều đánh giá hiệu quả.</p>
-                        <a href="#" class="btn custom-btn-primary">Giáo viên bắt đầu tại đây</a>
+                        <!-- <a href="#" class="btn custom-btn-primary">Giáo viên bắt đầu tại đây</a> -->
                     </div>
                 </div>
                 
@@ -149,7 +149,7 @@
                         <div class="small text-uppercase fw-bold mb-2 category-label">HỌC VIÊN VÀ SINH VIÊN</div>
                         <h2 class="display-5 fw-bold mb-4 text-dark">Bạn có thể học bất cứ điều gì.</h2>
                         <p class="mb-4">Xây dựng nền tảng kiến thức vững chắc về toán học, khoa học và nhiều lĩnh vực khác.</p>
-                        <a href="#" class="btn custom-btn-primary">Học viên bắt đầu tại đây</a>
+                        <!-- <a href="#" class="btn custom-btn-primary">Học viên bắt đầu tại đây</a> -->
                     </div>
                 </div>
                 
