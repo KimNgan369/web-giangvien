@@ -1,0 +1,102 @@
+:root {
+    --primary-color: #8E44AD;
+    --background-color: #F8F9FA;
+    --text-color: #343A40;
+    --accent-color: #FDCB6E;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Profile Cards */
+.profile-sidebar, .profile-content {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.profile-sidebar {
+    background-color: white;
+    height: 100%;
+}
+
+.profile-content {
+    background-color: white;
+}
+
+/* Card Header */
+.card-header {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+/* Navigation */
+.nav-link {
+    color: var(--text-color);
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: all 0.3s;
+}
+
+.nav-link:hover {
+    background-color: rgba(142, 68, 173, 0.1);
+}
+
+.nav-link.active {
+    background-color: var(--primary-color);
+    color: white !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #7d3b9b;
+    border-color: #7d3b9b;
+}
+
+.btn-accent {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+.btn-accent:hover {
+    background-color: #f8c14d;
+    border-color: #f8c14d;
+    color: var(--text-color);
+}
+
+/* Form Elements */
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(142, 68, 173, 0.25);
+}
+
+/* Alert */
+.alert-info {
+    background-color: rgba(142, 68, 173, 0.1);
+    border-color: rgba(142, 68, 173, 0.2);
+    color: var(--text-color);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .profile-sidebar {
+        margin-bottom: 20px;
+    }
+}
+
+/* Avatar */
+.rounded-circle {
+    border: 3px solid var(--primary-color);
+    padding: 2px;
+}
