@@ -2,10 +2,17 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
+
 -- Host: localhost:3306
 -- Generation Time: Apr 17, 2025 at 03:53 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
+
+-- Máy chủ: 127.0.0.1
+-- Thời gian đã tạo: Th4 19, 2025 lúc 07:53 AM
+-- Phiên bản máy phục vụ: 10.4.32-MariaDB
+-- Phiên bản PHP: 8.0.30
+
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -47,8 +54,14 @@ CREATE TABLE `documents` (
 --
 
 INSERT INTO `documents` (`id`, `title`, `description`, `format`, `file_size`, `file_path`, `uploader_id`, `class_id`, `upload_date`, `danhmuc`, `monhoc`, `lophoc`) VALUES
-(28, 'jztr', 'okehe', 'PDF', 0, 'uploads/67fe5d58c50ed_Lab 5 - Review.pdf', 1, 1, '2025-04-15 20:21:28', 'Bài giảng', 'Cơ Sở Dữ Liệu ', 'MMT-K27'),
-(30, 'kkk', '123456', 'PPTX', 0, 'uploads/67fe6133f3b32_Chuong I - gioi thieu.pptx', 1, 1, '2025-04-15 20:37:56', 'Tài liệu tham khảo', 'Cơ Sở Dữ Liệu ', 'KTPM-K27');
+
+(40, 'Lab 4 - Introduction to Prolog', 'Lab 4 nè', 'PDF', 401086, '1744983555_Lab 4 - Introduction to Prolog.pdf', 1, 5, '2025-04-18 20:39:15', 'Bài giảng', 'Cấu Trúc Rời Rạc', 'KTPM-K27'),
+(41, 'Lab 5- Review', 'ôn tập lại các bài đã học ', 'PDF', 147331, '1744983593_Lab 5 - Review.pdf', 1, 4, '2025-04-18 20:39:53', 'Đề thi', 'Lập Trình Web', 'KTPM-K27'),
+(42, 'ProblemSolvingUsingSearching', 'AI - lec3 - chương này là cái j đó không nhớ luôn í', 'PPTX', 795627, '1744983801_AI-lec03-ProblemSolvingUsingSearching.pptx', 1, 3, '2025-04-18 20:43:21', 'Bài giảng', 'Trí Tuệ Nhân Tạo', 'KHMT-K27'),
+(43, 'Bài tập tuần 2', 'Ôn lại kiến thức tạo bảng cũng như các thao tác trên bảng', 'PDF', 925657, '1744983963_Bai tuan 02.pdf', 1, 1, '2025-04-18 20:46:03', 'Bài tập', 'Cơ Sở Dữ Liệu ', 'KHMT-K27'),
+(44, 'Lab6', 'j j ko nhớ', 'PDF', 2574512, '1744985083_Lab6 (2).pdf', 1, 1, '2025-04-18 21:04:43', 'Tài liệu tham khảo', 'Cơ Sở Dữ Liệu ', 'KHMT-K27'),
+(45, 'ko biet', 'cho đại đại á', 'PPTX', 890545, '1744986750_05-Analysis-of-Algorithms.pptx', 1, 4, '2025-04-18 21:32:30', 'Tài liệu tham khảo', 'Lập Trình Web', 'KTPM-K27');
+
 
 -- --------------------------------------------------------
 
@@ -91,7 +104,11 @@ INSERT INTO `myclass` (`class_id`, `name`, `teacher_id`, `schedule`, `room`) VAL
 -- --------------------------------------------------------
 
 --
+
 -- Table structure for table `status`
+
+-- Cấu trúc bảng cho bảng `status`
+
 --
 
 CREATE TABLE `status` (
@@ -104,6 +121,9 @@ CREATE TABLE `status` (
 
 --
 -- Dumping data for table `status`
+=======
+-- Đang đổ dữ liệu cho bảng `status`
+
 --
 
 INSERT INTO `status` (`id`, `user_id`, `content`, `image_path`, `created_at`) VALUES
@@ -117,7 +137,11 @@ INSERT INTO `status` (`id`, `user_id`, `content`, `image_path`, `created_at`) VA
 -- --------------------------------------------------------
 
 --
+
 -- Table structure for table `users`
+
+-- Cấu trúc bảng cho bảng `users`
+
 --
 
 CREATE TABLE `users` (
@@ -166,7 +190,10 @@ ALTER TABLE `myclass`
   ADD KEY `teacher_id` (`teacher_id`);
 
 --
+
 -- Indexes for table `status`
+
+-- Chỉ mục cho bảng `status`
 --
 ALTER TABLE `status`
   ADD PRIMARY KEY (`id`),
@@ -174,6 +201,8 @@ ALTER TABLE `status`
 
 --
 -- Indexes for table `users`
+-- Chỉ mục cho bảng `users`
+>>>>>>> 5abe952 (da noi class voi tailieu)
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
@@ -188,7 +217,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `downloads`
@@ -203,13 +232,21 @@ ALTER TABLE `myclass`
   MODIFY `class_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+
 -- AUTO_INCREMENT for table `status`
+
+-- AUTO_INCREMENT cho bảng `status`
+
 --
 ALTER TABLE `status`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
+
 -- AUTO_INCREMENT for table `users`
+
+-- AUTO_INCREMENT cho bảng `users`
+
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
@@ -240,7 +277,11 @@ ALTER TABLE `myclass`
   ADD CONSTRAINT `myclass_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
+
 -- Constraints for table `status`
+
+-- Các ràng buộc cho bảng `status`
+
 --
 ALTER TABLE `status`
   ADD CONSTRAINT `status_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);

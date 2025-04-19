@@ -1,23 +1,24 @@
 <?php
 $html_class = '';
-foreach ( $classes as $class ) {
+foreach ($classes as $class) {
     extract($class);
     $html_class .= '<div class="col-lg-4 col-md-6 mb-4">
-                <div class="card subject-card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="card-title mb-0">'.$name.'</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text"><i class="fas fa-chalkboard-teacher me-2"></i>Giảng viên: '.$teacher_name.'</p>
-                        <p class="card-text"><i class="fas fa-clock me-2"></i>'.$schedule.'</p>
-                        <p class="card-text"><i class="fas fa-university me-2"></i>'.$room.'</p>
-                    </div>
-                    <div class="card-footer bg-transparent">
-                        <a href="tailieu.php?class_id='.$class_id.'" class="btn btn-outline-primary btn-sm ms-2">Tài liệu</a>
-                    </div>
-                </div>
-            </div>';
+        <div class="card subject-card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">' . htmlspecialchars($name) . '</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text"><i class="fas fa-chalkboard-teacher me-2"></i>Giảng viên: ' . htmlspecialchars($teacher_name) . '</p>
+                <p class="card-text"><i class="fas fa-clock me-2"></i>' . htmlspecialchars($schedule) . '</p>
+                <p class="card-text"><i class="fas fa-university me-2"></i>' . htmlspecialchars($room) . '</p>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="index.php?act=tailieu&monhoc=' . urlencode($name) . '&thoigian=&format=" class="btn btn-outline-primary btn-sm ms-2">Tài liệu</a>
+            </div>
+        </div>
+    </div>';
 }
+
 ?>
   
   

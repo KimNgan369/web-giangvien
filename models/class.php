@@ -9,5 +9,11 @@ function get_myclass() {
             ORDER BY c.class_id DESC";
     return pdo_query($sql);
 }
-
+function get_documents() {
+    $sql = "SELECT c.*, d.class_id AS classid
+            from myclass c
+            JOIN documents d ON c.class_id = d.class_id
+            ORDER BY c.class_id DESC";
+    return pdo_query($sql);
+}
 ?>
