@@ -1,0 +1,94 @@
+:root {
+    --primary: #8E44AD;
+    --background: #F8F9FA;
+    --text: #343A40;
+    --accent: #FDCB6E;
+    --secondary: #ADB5BD;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px 0;
+}
+
+/* Custom colors */
+.text-primary {
+    color: var(--primary) !important;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #7d3c98;
+    border-color: #7d3c98;
+}
+
+.btn-secondary {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    color: white;
+}
+
+.btn-secondary:hover, .btn-secondary:focus {
+    background-color: #7d3c98;
+    border-color: #7d3c98;
+}
+
+.link-primary {
+    color: var(--primary) !important;
+    text-decoration: none;
+}
+
+.link-primary:hover {
+    text-decoration: underline;
+}
+
+/* Login container */
+.login-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Login form */
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(142, 68, 173, 0.25);
+}
+
+/* Button styles */
+.btn-outline-secondary {
+    border-color: #ced4da;
+    color: var(--text);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+    color: var(--text);
+    border-color: #ced4da;
+    transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .login-container {
+        padding: 15px !important;
+    }
+}
+
+/* Social login icons */
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
