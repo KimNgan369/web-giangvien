@@ -1,0 +1,441 @@
+:root {
+    --primary: #8E44AD;
+    --background: #F8F9FA;
+    --text: #343A40;
+    --accent: #FDCB6E;
+    --primary-light: #A569BD;
+    --primary-dark: #7D3C98;
+    --accent-light: #FFE082;
+    --accent-dark: #F9A826;
+    --border: #DEE2E6;
+    --danger: #DC3545;
+    --success: #28A745;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--primary);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.dropdown-menu {
+    border-color: var(--border);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Cards */
+.card {
+    border-color: var(--border);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.btn-accent {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: var(--text);
+}
+
+.btn-accent:hover, .btn-accent:focus {
+    background-color: var(--accent-dark);
+    border-color: var(--accent-dark);
+    color: var(--text);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+/* Table */
+.table th {
+    font-weight: 600;
+    background-color: #f9f9f9;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(142, 68, 173, 0.05);
+}
+
+.document-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    color: white;
+}
+
+.document-icon.pdf {
+    background-color: #E74C3C;
+}
+
+.document-icon.doc {
+    background-color: #3498DB;
+}
+
+.document-icon.ppt {
+    background-color: #E67E22;
+}
+
+.document-icon.xls {
+    background-color: #27AE60;
+}
+
+.document-icon.img {
+    background-color: #9B59B6;
+}
+
+.document-icon.zip {
+    background-color: #34495E;
+}
+
+.document-icon.default {
+    background-color: #95A5A6;
+}
+
+/* Document preview */
+.document-preview {
+    min-height: 300px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+}
+
+/* Pagination */
+.page-item.active .page-link {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.page-link {
+    color: var(--primary);
+}
+
+.page-link:hover {
+    color: var(--primary-dark);
+}
+
+/* Action buttons */
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    transition: all 0.2s ease;
+    background-color: transparent;
+    border: none;
+}
+
+.action-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.action-btn.view:hover {
+    color: var(--primary);
+}
+
+.action-btn.edit:hover {
+    color: #17A2B8;
+}
+
+.action-btn.delete:hover {
+    color: var(--danger);
+}
+
+/* Modals */
+.modal-header {
+    background-color: var(--primary);
+    color: white;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border);
+}
+
+/* File input */
+.custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+.custom-file-input::before {
+    content: 'Chọn file';
+    display: inline-block;
+    background: linear-gradient(top, #f9f9f9, #e3e3e3);
+    border: 1px solid #999;
+    border-radius: 3px;
+    padding: 5px 8px;
+    outline: none;
+    white-space: nowrap;
+    cursor: pointer;
+    text-shadow: 1px 1px #fff;
+    font-weight: 700;
+    font-size: 10pt;
+}
+
+.custom-file-input:hover::before {
+    border-color: black;
+}
+
+.custom-file-input:active::before {
+    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+}
+
+/* Badges */
+.badge {
+    font-weight: normal;
+    padding: 0.35em 0.65em;
+}
+
+/* Upload progress */
+.progress {
+    height: 6px;
+    border-radius: 3px;
+    margin-top: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+    .table {
+        min-width: 900px;
+    }
+    
+    .action-column {
+        min-width: 120px;
+    }
+}
+
+
+
+/* Navbar styling */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.navbar-brand {
+    font-weight: 700;
+}
+
+.text-primary, .card-title {
+    color: var(--primary) !important;
+}
+
+.btn-primary {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--primary-dark) !important;
+    border-color: var(--primary-dark) !important;
+}
+
+.input-group-text {
+    border-color: var(--border-color);
+}
+
+.form-control {
+    border-color: var(--border-color);
+}
+
+/* Teacher sub navigation */
+.teacher-nav .nav-link {
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.teacher-nav .nav-link:hover {
+    color: var(--primary);
+}
+
+.teacher-nav .nav-link.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    font-weight: 500;
+}
+
+/* Breadcrumb styling */
+.breadcrumb a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+/* Card styling */
+.card {
+    border: none;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.card-header {
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 1.5rem;
+}
+
+/* Form styling */
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 0.25rem rgba(142, 68, 173, 0.25);
+}
+
+/* Upload area styling */
+.upload-container {
+    border: 2px dashed var(--border-color);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.upload-container:hover, .upload-container.dragover {
+    border-color: var(--primary);
+    background-color: rgba(142, 68, 173, 0.05);
+}
+
+.upload-container .bi {
+    color: var(--primary);
+}
+
+/* Button styling */
+.btn-accent {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: var(--text);
+}
+
+.btn-accent:hover, .btn-accent:focus {
+    background-color: var(--accent-dark);
+    border-color: var(--accent-dark);
+    color: var(--text);
+}
+
+/* File info styling */
+.file-icon {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+/* User profile dropdown */
+.teacher-profile .dropdown-toggle::after {
+    display: none;
+}
+
+.teacher-profile .dropdown-toggle {
+    color: var(--text);
+}
+
+.teacher-profile .dropdown-menu {
+    min-width: 240px;
+}
+
+/* Search box styling */
+.search-container .input-group {
+    width: 300px;
+}
+
+.search-container .form-control:focus {
+    box-shadow: none;
+}
+
+/* Dropdown menu styling */
+.dropdown-item:hover, .dropdown-item:focus {
+    background-color: rgba(142, 68, 173, 0.1);
+}
+
+.dropdown-item.active {
+    background-color: var(--primary);
+}
+
+/* Multi-select styling */
+select[multiple] {
+    min-height: 120px;
+}
+
+/* Footer styling */
+footer {
+    background-color: #fff;
+}
+
+footer a:hover {
+    color: var(--primary) !important;
+}
+
+/* Toast styling */
+.toast {
+    border-left: 4px solid var(--primary);
+}
+
+/* Hover effects */
+a:hover {
+    color: var(--primary-dark);
+}
+
+/* Badge styling */
+.badge.bg-danger {
+    font-size: 0.6rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .search-container .input-group {
+        width: 100%;
+    }
+    .teacher-nav .nav-link {
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+}
