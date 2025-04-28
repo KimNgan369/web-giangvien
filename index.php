@@ -15,6 +15,10 @@ if (!isset($_GET['act'])) {
     include "view/home.php";
 } else {
     switch ($_GET['act']) {
+        // case 'shop':
+        //     $dssp=get_dssp(6);
+        //     include "view/shop.php";
+        //     break;
         case 'gioithieu':
             include "view/gioithieu.php";
             break;
@@ -42,7 +46,7 @@ if (!isset($_GET['act'])) {
                     session_regenerate_id(true);
                     
                     if ($userInfo['role'] == 'teacher') {
-                        header('location: teacher/index.php?act=mydocuments');
+                        header('location: teacher/index.php');
                     } else if ($userInfo['role'] == 'admin') {
                         header('location: admin/index.php');
                     } else {

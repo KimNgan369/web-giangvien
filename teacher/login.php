@@ -14,9 +14,12 @@ if(isset($_POST['dangnhap'])) {
     
     if ($userInfo) { 
         // Đăng nhập thành công
-        $_SESSION['role'] = $userInfo['role'];
-        $_SESSION['username'] = $username;
-        $_SESSION['user_id'] = $userInfo['id'];
+        $_SESSION['user'] = [
+            'id' => $userInfo['id'],
+            'username' => $userInfo['username'],
+            'full_name' => $userInfo['full_name'],
+            'role' => $userInfo['role']
+        ];        
         
         // Regenerate session ID để tăng cường bảo mật
         session_regenerate_id(true);

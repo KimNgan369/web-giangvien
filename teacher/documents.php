@@ -151,6 +151,155 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
     exit;
 }
 
+if (isset($_SESSION["role"]) && $_SESSION["role"] == 'teacher') {
+
+
+    // Xử lý khi gửi form upload
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
+        $errors = [];
+
+        $documentName = $_POST['documentName'] ?? '';
+        $documentDescription = $_POST['documentDescription'] ?? '';
+        $documentDanhmuc = $_POST['documentDanhmuc'] ?? '';
+        $classId = $_POST['classId'] ?? null;
+        $documentClass = $_POST['documentClass'] ?? '';
+
+        // Truy vấn tên môn học
+        if ($classId) {
+            $pdo = pdo_get_connection();
+            $stmt = $pdo->prepare("SELECT name FROM myclass WHERE class_id = :class_id");
+            $stmt->execute([':class_id' => $classId]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $documentMonhoc = $row ? $row['name'] : '';
+        } else {
+            $documentMonhoc = '';
+        }
+
+        // Đảm bảo rằng tất cả các trường bắt buộc đã được điền
+        if (empty($documentName) || empty($classId) || empty($documentDanhmuc) || empty($documentClass)) {
+            $errors[] = "Vui lòng điền đủ thông tin!";
+        }
+
+        // Xử lý file tải lên
+        $errors = []; // Đảm bảo mảng lỗi được khởi tạo
+        $savedFileName = ""; // Tên file lưu vào DB
+
+        if (isset($_FILES['documentFile']) && $_FILES['documentFile']['error'] === 0) {
+            $fileName = basename($_FILES['documentFile']['name']);
+            $fileTmpName = $_FILES['documentFile']['tmp_name'];
+            $fileSize = $_FILES['documentFile']['size'];
+            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+            // Xác định định dạng tài liệu từ đuôi file
+            switch ($fileExtension) {
+                case 'pdf':
+                    $documentFormat = 'PDF';
+                    break;
+                case 'doc':
+                case 'docx':
+                    $documentFormat = 'DOCX';
+                    break;
+                case 'ppt':
+                case 'pptx':
+                    $documentFormat = 'PPTX';
+                    break;
+                case 'xls':
+                case 'xlsx':
+                    $documentFormat = 'Excel';
+                    break;
+                default:
+                    $documentFormat = 'Unknown';
+                    break;
+            }
+
+            // Kiểm tra loại file hợp lệ
+            $allowedFileTypes = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx'];
+            if (!in_array($fileExtension, $allowedFileTypes)) {
+                $errors[] = "Chỉ cho phép tải lên các file PDF, DOC, DOCX, PPT, PPTX, Excel!";
+            } else {
+                // Tạo thư mục nếu chưa có
+                if (!is_dir('uploads')) {
+                    mkdir('uploads', 0777, true);
+                }
+
+                $newFileName = time() . '_' . $fileName;
+                $filePath = 'uploads/' . $newFileName;
+
+                if (move_uploaded_file($fileTmpName, $filePath)) {
+                    $savedFileName = $newFileName; // Chỉ lưu tên file (không có 'uploads/')
+                } else {
+                    $errors[] = "Lỗi khi lưu tệp!";
+                    error_log("Không thể di chuyển file từ $fileTmpName đến $filePath");
+                }
+            }
+        } else {
+            $errors[] = "Vui lòng chọn file tài liệu!";
+        }
+
+        // Nếu không có lỗi thì lưu vào database
+        if (empty($errors)) {
+            $uploaderId = $_SESSION['user_id'] ?? null;
+            $fileSize = $_FILES['documentFile']['size'];
+
+            if ($uploaderId && insert_document(
+                $documentName,
+                $documentDescription,
+                $documentFormat,
+                $documentDanhmuc,
+                $documentClass,
+                $documentMonhoc,
+                $savedFileName, // chỉ lưu tên file
+                $uploaderId,
+                $classId,
+                $fileSize
+            )) {
+                $_SESSION['message'] = "Tải tài liệu thành công!";
+                header("Location: documents.php");
+                exit;
+            } else {
+                echo "<div class='alert alert-danger'>Lỗi khi tải tài liệu!</div>";
+            }
+        } else {
+            foreach ($errors as $error) {
+                echo "<div class='alert alert-danger'>$error</div>";
+            }
+        }
+        }
+    // Xử lý xóa tài liệu
+    if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
+        $documentId = (int)$_GET['id']; // Ép kiểu để tránh SQL injection
+        $document = get_document_by_id($documentId);
+        
+        if (!$document) {
+            $_SESSION['error'] = "Tài liệu không tồn tại!";
+            header("Location: documents.php");
+            exit;
+        }
+
+        // Kiểm tra quyền sở hữu
+        if ($document['uploader_id'] != $_SESSION['user_id']) {
+            $_SESSION['error'] = "Bạn không có quyền xóa tài liệu này!";
+            header("Location: documents.php");
+            exit;
+        }
+
+        // Xóa file vật lý trước
+        if (file_exists($document['file_path']) && !unlink($document['file_path'])) {
+            $_SESSION['error'] = "Không thể xóa file vật lý!";
+            header("Location: documents.php");
+            exit;
+        }
+
+        // Xóa từ database
+        if (delete_document($documentId)) {
+            $_SESSION['message'] = "Xóa tài liệu thành công!";
+        } else {
+            $_SESSION['error'] = "Lỗi khi xóa dữ liệu từ database! Chi tiết: " . $conn->errorInfo()[2];
+        }
+        
+        header("Location: documents.php");
+        exit;
+    }
 // Phân trang
 $itemsPerPage = 5; // Số item mỗi trang
 $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
@@ -166,7 +315,10 @@ $totalPages = ceil($totalDocuments / $itemsPerPage);
 $documents = get_documents_paginated($_SESSION['user_id'], $offset, $itemsPerPage); // Thay thế hàm get_all_documents()
 ?>
 
+
+
 <!-- HTML Body -->
+<body>
 <div class="container my-4">
     <?php if (isset($_SESSION['message'])): ?>
         <div class="alert alert-success"><?= $_SESSION['message'] ?></div>
@@ -225,7 +377,7 @@ $documents = get_documents_paginated($_SESSION['user_id'], $offset, $itemsPerPag
                             }
                             ?>
                             <tr>
-                                <td><?= $index + 1 ?></td>
+                                <td><?= $index + 1 ?></td> <!-- Sửa ở đây: thay $doc['id'] bằng $index + 1 -->
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <?= $fileIcon ?>
@@ -251,7 +403,7 @@ $documents = get_documents_paginated($_SESSION['user_id'], $offset, $itemsPerPag
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    </tbody>
+                </tbody>
                 </table>
             </div>
         </div>
@@ -338,11 +490,11 @@ $documents = get_documents_paginated($_SESSION['user_id'], $offset, $itemsPerPag
     </div>
 </div>
 
-<!-- Phân trang -->
+
 <nav aria-label="Phân trang tài liệu">
     <ul class="pagination justify-content-center">
         <li class="page-item <?= ($currentPage <= 1) ? 'disabled' : '' ?>">
-            <a class="page-link" href="?act=mydocuments&page=<?= $currentPage - 1 ?>">Trước</a>
+            <a class="page-link" href="?page=<?= $currentPage - 1 ?>">Trước</a>
         </li>
         
         <?php 
@@ -353,12 +505,14 @@ $documents = get_documents_paginated($_SESSION['user_id'], $offset, $itemsPerPag
         // Luôn hiển thị trang đầu nếu cần
         if ($startPage > 1) {
             echo '<li class="page-item"><a class="page-link" href="?act=mydocuments&page=1">1</a></li>';
+            echo '<li class="page-item"><a class="page-link" href="?page=1">1</a></li>';
             if ($startPage > 2) echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
         }
         
         for ($i = $startPage; $i <= $endPage; $i++): ?>
             <li class="page-item <?= ($i === $currentPage) ? 'active' : '' ?>">
                 <a class="page-link" href="?act=mydocuments&page=<?= $i ?>"><?= $i ?></a>
+                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
             </li>
         <?php endfor; 
         
@@ -366,6 +520,7 @@ $documents = get_documents_paginated($_SESSION['user_id'], $offset, $itemsPerPag
         if ($endPage < $totalPages) {
             if ($endPage < $totalPages - 1) echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
             echo '<li class="page-item"><a class="page-link" href="?act=mydocuments&page='.$totalPages.'">'.$totalPages.'</a></li>';
+            echo '<li class="page-item"><a class="page-link" href="?page='.$totalPages.'">'.$totalPages.'</a></li>';
         }
         ?>
         
@@ -374,3 +529,16 @@ $documents = get_documents_paginated($_SESSION['user_id'], $offset, $itemsPerPag
         </li>
     </ul>
 </nav>
+
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="layout/js/mydocuments.js"></script>
+
+</body>
+
+<?php 
+} else {
+    header('location: login.php');
+    exit;
+}
+?>

@@ -1,3 +1,9 @@
+document.getElementById('editProfileBtn').addEventListener('click', function () {
+    const inputs = document.querySelectorAll('#profileForm input');
+    inputs.forEach(input => input.removeAttribute('readonly'));
+    document.getElementById('saveChangesBtn').classList.remove('d-none');
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Trang hồ sơ người dùng đã sẵn sàng!');
     

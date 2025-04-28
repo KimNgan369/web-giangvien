@@ -80,9 +80,12 @@ if (isset($_SESSION["role"])) {
                         <div class="mb-4">
                             <h6 class="fw-bold text-primary">Trình độ</h6>
                             <div id="educationFields">
-                                <?php foreach ($teacher['education'] as $edu): ?>
-                                    <input type="text" class="form-control mb-2" name="education[]" value="<?= htmlspecialchars($edu) ?>" placeholder="Trình độ">
-                                <?php endforeach; ?>
+                            <?php foreach ($teacher['education'] as $edu): ?>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" name="education[]" value="<?= htmlspecialchars($edu) ?>" placeholder="Trình độ">
+                                    <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.remove()"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                            <?php endforeach; ?>
                             </div>
                             <button type="button" class="btn btn-outline-primary mt-2" onclick="addEducation()">+ Thêm trình độ</button>
                         </div>
@@ -90,12 +93,17 @@ if (isset($_SESSION["role"])) {
                         <div class="mb-4">
                             <h6 class="fw-bold text-primary">Kinh nghiệm giảng dạy</h6>
                             <div id="experienceFields">
-                                <?php foreach ($teacher['experience'] as $exp): ?>
-                                    <div class="mb-3">
-                                        <input type="text" class="form-control mb-1" name="exp_title[]" value="<?= htmlspecialchars($exp['title']) ?>" placeholder="Chức danh">
-                                        <input type="text" class="form-control" name="exp_place[]" value="<?= htmlspecialchars($exp['place']) ?>" placeholder="Nơi công tác">
+                            <?php foreach ($teacher['experience'] as $exp): ?>
+                                <div class="mb-3 input-grouped">
+                                    <div class="input-group mb-1">
+                                        <input type="text" class="form-control" name="exp_title[]" value="<?= htmlspecialchars($exp['title']) ?>" placeholder="Chức danh">
                                     </div>
-                                <?php endforeach; ?>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="exp_place[]" value="<?= htmlspecialchars($exp['place']) ?>" placeholder="Nơi công tác">
+                                        <button type="button" class="btn btn-outline-danger ms-2" onclick="this.closest('.mb-3').remove()"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
                             </div>
                             <button type="button" class="btn btn-outline-primary mt-2" onclick="addExperience()">+ Thêm kinh nghiệm</button>
                         </div>
@@ -103,20 +111,22 @@ if (isset($_SESSION["role"])) {
                         <div class="mb-4">
                             <h6 class="fw-bold text-primary mb-3"><i class="fas fa-flask me-2"></i>Nghiên cứu & Dự án</h6>
                             <div class="accordion" id="researchProjects">
-                                <?php foreach ($teacher['projects'] as $index => $project): ?>
-                                    <div class="accordion-item mb-3">
-                                        <h2 class="accordion-header" id="heading<?= $index ?>">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#proj<?= $index ?>">
-                                                <?= htmlspecialchars($project['title']) ?>
-                                            </button>
-                                        </h2>
-                                        <div id="proj<?= $index ?>" class="accordion-collapse collapse" data-bs-parent="#researchProjects">
-                                            <div class="accordion-body">
-                                                <?= nl2br(htmlspecialchars($project['detail'])) ?>
-                                            </div>
+                            <?php foreach ($teacher['projects'] as $index => $project): ?>
+                                <div class="accordion-item mb-3">
+                                    <h2 class="accordion-header" id="heading<?= $index ?>">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#proj<?= $index ?>">
+                                            <?= htmlspecialchars($project['title']) ?>
+                                        </button>
+                                    </h2>
+                                    <div id="proj<?= $index ?>" class="accordion-collapse collapse" data-bs-parent="#researchProjects">
+                                        <div class="accordion-body">
+                                            <input type="text" name="proj_title[]" class="form-control mb-2" value="<?= htmlspecialchars($project['title']) ?>" placeholder="Tiêu đề dự án">
+                                            <textarea name="proj_detail[]" class="form-control mb-2" rows="3" placeholder="Chi tiết dự án..."><?= htmlspecialchars($project['detail']) ?></textarea>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="this.closest('.accordion-item').remove()"><i class="fas fa-trash-alt"></i> Xóa dự án</button>
                                         </div>
                                     </div>
-                                <?php endforeach; ?>
+                                </div>
+                            <?php endforeach; ?>
                             </div>
                             <button type="button" class="btn btn-outline-primary mt-2" onclick="addProject()">+ Thêm dự án</button>
                         </div>
@@ -181,20 +191,22 @@ if (isset($_SESSION["role"])) {
                     <div class="mb-4">
                         <h6 class="fw-bold text-primary mb-3"><i class="fas fa-flask me-2"></i>Nghiên cứu & Dự án</h6>
                         <div class="accordion" id="researchProjects">
-                            <?php foreach ($teacher['projects'] as $index => $project): ?>
-                                <div class="accordion-item mb-3">
-                                    <h2 class="accordion-header" id="heading<?= $index ?>">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#proj<?= $index ?>">
-                                            <?= htmlspecialchars($project['title']) ?>
-                                        </button>
-                                    </h2>
-                                    <div id="proj<?= $index ?>" class="accordion-collapse collapse" data-bs-parent="#researchProjects">
-                                        <div class="accordion-body">
-                                            <?= nl2br(htmlspecialchars($project['detail'])) ?>
-                                        </div>
+                        <?php foreach ($teacher['projects'] as $index => $project): ?>
+                            <div class="accordion-item mb-3">
+                                <h2 class="accordion-header" id="heading<?= $index ?>">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#proj<?= $index ?>">
+                                        <?= htmlspecialchars($project['title'] ?: 'Dự án mới') ?>
+                                    </button>
+                                </h2>
+                                <div id="proj<?= $index ?>" class="accordion-collapse collapse show" data-bs-parent="#researchProjects">
+                                    <div class="accordion-body">
+                                        <input type="text" name="proj_title[]" class="form-control mb-2" value="<?= htmlspecialchars($project['title']) ?>" placeholder="Tiêu đề dự án">
+                                        <textarea name="proj_detail[]" class="form-control" rows="3" placeholder="Chi tiết dự án..."><?= htmlspecialchars($project['detail']) ?></textarea>
                                     </div>
                                 </div>
-                            <?php endforeach; ?>
+                            </div>
+                        <?php endforeach; ?>
+
                         </div>
                     </div>
                 </div>
