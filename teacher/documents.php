@@ -530,10 +530,6 @@ $documents = get_documents_paginated($_SESSION['user_id'], $offset, $itemsPerPag
     </ul>
 </nav>
 
-<!-- JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="layout/js/mydocuments.js"></script>
-
 </body>
 
 <?php 
