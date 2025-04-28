@@ -1,12 +1,12 @@
 <?php
-session_start();
+// session_start();
 ob_start();
 
 if (isset($_SESSION["role"]) && $_SESSION["role"] == 'teacher') {
-include "header.php";
-require_once '../models/pdo.php';
-require_once '../models/status.php';
-require_once '../models/user.php';
+// include "header.php";
+require_once 'teacher/models/pdo.php';
+require_once 'teacher/models/status.php';
+require_once 'teacher/models/user.php';
 
 // Start the session if not already started
 if (session_status() === PHP_SESSION_NONE) {

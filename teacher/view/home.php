@@ -1,345 +1,144 @@
- <!-- Main Content -->
- <div class="container my-4">
-        <div class="row mb-4">
-            <div class="col-md-8">
-                <h2 class="mb-3">Tài liệu của tôi</h2>
-            </div>
-            <div class="col-md-4 text-md-end">
-                <button class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                    <i class="fas fa-plus me-2"></i>Upload tài liệu
-                </button>
-            </div>
-        </div>
-
-        <!-- Documents Table -->
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle" id="documentsTable">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col" width="5%">#</th>
-                                <th scope="col" width="40%">Tên tài liệu</th>
-                                <th scope="col" width="15%">Định dạng</th>
-                                <th scope="col" width="15%">Ngày tải lên</th>
-                                <th scope="col" width="15%">Kích thước</th>
-                                <th scope="col" width="10%">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <tr>
-                                <td>1</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-file-pdf text-danger me-2 fs-4"></i>
-                                        <div>
-                                            <div class="fw-bold">Bài giảng Toán cao cấp - Chương 1</div>
-                                            <div class="text-muted small">Môn: Toán cao cấp | Lớp: KHMT-K27</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><span class="badge bg-danger">PDF</span></td>
-                                <td>15/03/2023</td>
-                                <td>2.4 MB</td>
-                                <td>
-                                    <div class="d-flex">
-                                        <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#viewModal">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-
-                                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-file-word text-primary me-2 fs-4"></i>
-                                        <div>
-                                            <div class="fw-bold">Đề thi Lập trình cơ bản - Giữa kỳ</div>
-                                            <div class="text-muted small">Môn: Lập trình cơ bản | Lớp: KTPM-K27</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><span class="badge bg-primary">DOCX</span></td>
-                                <td>10/04/2023</td>
-                                <td>1.8 MB</td>
-                                <td>
-                                    <div class="d-flex">
-                                        <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#viewModal">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-
-                                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-file-powerpoint text-warning me-2 fs-4"></i>
-                                        <div>
-                                            <div class="fw-bold">Slide bài giảng Cơ sở dữ liệu</div>
-                                            <div class="text-muted small">Môn: Cơ sở dữ liệu | Lớp: MMT-K27</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><span class="badge bg-warning text-dark">PPTX</span></td>
-                                <td>05/05/2023</td>
-                                <td>5.2 MB</td>
-                                <td>
-                                    <div class="d-flex">
-                                        <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#viewModal">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-
-                                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <nav aria-label="Phân trang" class="mt-4">
-                    <ul class="pagination justify-content-center" id="pagination">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1"><i class="fas fa-chevron-left"></i></a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </div>
-
-    <!-- Upload Modal -->
-    <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-cloud-upload-alt me-2"></i>Tải lên tài liệu mới</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="uploadForm">
-                        <div class="mb-3">
-                            <label for="documentName" class="form-label">Tên tài liệu</label>
-                            <input type="text" class="form-control" id="documentName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="documentDescription" class="form-label">Mô tả</label>
-                            <textarea class="form-control" id="documentDescription" rows="3"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="documentCategory" class="form-label">Danh mục</label>
-                            <select class="form-select" id="documentCategory">
-                                <option value="">Chọn danh mục</option>
-                                <option value="1">Bài giảng</option>
-                                <option value="2">Đề thi</option>
-                                <option value="3">Tài liệu tham khảo</option>
-                                <option value="4">Bài tập</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editDocumentSubject" class="form-label">Môn học liên quan <span class="text-danger">*</span></label>
-                            <select class="form-select" id="editDocumentSubject" required>
-                                <option value="">Chọn môn học</option>
-                                <option value="1">Toán cao cấp</option>
-                                <option value="2">Lập trình cơ bản</option>
-                                <option value="3">Cơ sở dữ liệu</option>
-                                <option value="4">Trí tuệ nhân tạo</option>
-                                <option value="5">Phát triển web</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editDocumentClass" class="form-label">Lớp học cụ thể <span class="text-danger">*</span></label>
-                            <select class="form-select" id="editDocumentClass" required>
-                                <option value="">Chọn lớp học</option>
-                                <option value="1">KHMT-K27</option>
-                                <option value="2">KTPM-K27</option>
-                                <option value="3">MMT-K27</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="documentFile" class="form-label">Chọn file</label>
-                            <input class="form-control" type="file" id="documentFile" required>
-                        </div>
-                    </form>
-                    <div class="document-upload-preview d-none mt-3">
-                        <div class="card bg-light">
-                            <div class="card-body">
-                                <h6><i class="fas fa-file-alt me-2"></i><span id="previewName"></span></h6>
-                                <div class="small text-muted" id="previewInfo"></div>
-                                <div class="progress mt-2">
-                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 0%"></div>
-                                </div>
-                            </div>
+<section class="hero-section">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6 position-relative">
+                    <div class="accent-star position-absolute" style="top: 50%; left: -40px;">
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L15 8L21 9L17 14L18 20L12 17L6 20L7 14L3 9L9 8L12 2Z" fill="#FDCB6E"/>
+                        </svg>
+                    </div>
+                    <div class="accent-square position-absolute" style="top: 0; right: 20%;">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="4" y="4" width="16" height="16" rx="2" transform="rotate(15 12 12)" fill="#FDCB6E"/>
+                        </svg>
+                    </div>
+                    <div class="student-image-container">
+                        <img src="layout/img/studentcuoi.jpg" alt="Smiling student" class="img-fluid rounded student-image">
+                        <div class="scribble-decoration">
+                            <svg width="120" height="60" viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5,30 Q30,5 60,30 T120,30" stroke="#343A40" stroke-width="2" fill="none"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary" id="uploadBtn">Tải lên</button>
+                
+                <div class="col-lg-6 py-4">
+                    <h1 class="display-4 fw-bold text-dark mb-4">
+                        Cho mỗi học sinh,<br>
+                        mỗi lớp học.<br>
+                        <span class="text-primary">Kết quả thực tế.</span>
+                    </h1>
+                    <p class="lead mb-4">
+                        Nền giáo dục đẳng cấp thế giới dành cho bất kỳ ai, ở bất kỳ đâu.
+                    </p>
                 </div>
+
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Edit Modal -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Chỉnh sửa tài liệu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+     <!-- Teachers Section -->
+     <section class="teachers-section py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="student-portraits position-relative">
+                        
+                        <div class="portrait-circle portrait-top">
+                            <img src="layout/img/teacher1.jpg" alt="Student portrait" class="img-fluid rounded-circle">
+                            <div class="bg-circle bg-success"></div>
+                        </div>
+                        
+                        <div class="portrait-circle portrait-left">
+                            <img src="layout/img/teacher2.jpg" alt="Student portrait" class="img-fluid rounded-circle">
+                            <div class="bg-circle bg-info"></div>
+                        </div>
+                        
+                        <div class="portrait-circle portrait-right">
+                            <img src="layout/img/teacher4.jpg" alt="Student portrait" class="img-fluid rounded-circle">
+                            <div class="bg-circle bg-warning"></div>
+                        </div>
+                        
+
+                        <div class="decorative-star">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L15 8L21 9L17 14L18 20L12 17L6 20L7 14L3 9L9 8L12 2Z" fill="#FDCB6E"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="decorative-circle">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="10" stroke="#FDCB6E" stroke-width="2" fill="none"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="decorative-scribble">
+                            <svg width="100" height="60" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10,30 Q30,50 50,30 T90,30" stroke="#343A40" stroke-width="2" fill="none"/>
+                            </svg>
+                        </div>
+
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form id="editForm">
-                        <input type="hidden" id="editDocumentId">
-                        <div class="mb-3">
-                            <label for="editDocumentName" class="form-label">Tên tài liệu</label>
-                            <input type="text" class="form-control" id="editDocumentName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editDocumentDescription" class="form-label">Mô tả</label>
-                            <textarea class="form-control" id="editDocumentDescription" rows="3"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editDocumentCategory" class="form-label">Danh mục</label>
-                            <select class="form-select" id="editDocumentCategory">
-                                <option value="">Chọn danh mục</option>
-                                <option value="1">Bài giảng</option>
-                                <option value="2">Đề thi</option>
-                                <option value="3">Tài liệu tham khảo</option>
-                                <option value="4">Bài tập</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editDocumentSubject" class="form-label">Môn học liên quan <span class="text-danger">*</span></label>
-                            <select class="form-select" id="editDocumentSubject" required>
-                                <option value="">Chọn môn học</option>
-                                <option value="1">Toán cao cấp</option>
-                                <option value="2">Lập trình cơ bản</option>
-                                <option value="3">Cơ sở dữ liệu</option>
-                                <option value="4">Trí tuệ nhân tạo</option>
-                                <option value="5">Phát triển web</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editDocumentClass" class="form-label">Lớp học cụ thể <span class="text-danger">*</span></label>
-                            <select class="form-select" id="editDocumentClass" required>
-                                <option value="">Chọn lớp học</option>
-                                <option value="1">KHMT-K27</option>
-                                <option value="2">KTPM-K27</option>
-                                <option value="3">MMT-K27</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">File hiện tại</label>
-                            <div class="d-flex align-items-center">
-                                <span class="me-2" id="currentFileName"></span>
-                                <span class="badge bg-primary" id="currentFileType"></span>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editDocumentFile" class="form-label">Thay thế file (không bắt buộc)</label>
-                            <input class="form-control" type="file" id="editDocumentFile">
-                        </div>
-                    </form>
+                
+                <div class="col-lg-6">
+                    <div class="teachers-content ps-lg-5">
+                        <div class="small text-uppercase fw-bold mb-2 category-label">GIÁO VIÊN</div>
+                        <h2 class="display-5 fw-bold mb-4 text-dark">Tạo sự khác biệt trong lớp học và thu hút mọi học sinh.</h2>
+                        <p class="mb-4">Chúng tôi giúp giáo viên hỗ trợ toàn bộ lớp học của mình. 90% giáo viên tại Việt Nam từng sử dụng For Student đều đánh giá hiệu quả.</p>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary" id="saveChangesBtn">Lưu thay đổi</button>
-                </div>
+                
             </div>
         </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-exclamation-triangle text-danger me-2"></i>Xác nhận xóa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Bạn có chắc chắn muốn xóa tài liệu <strong id="deleteDocumentName"></strong>?</p>
-                    <p class="text-danger">Lưu ý: Hành động này không thể hoàn tác.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- View Document Modal -->
-    <div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewDocumentTitle"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-3">
-                        <div class="col-md-8">
-                            <div class="mb-2">
-                                <span class="text-muted">Mô tả:</span>
-                                <p id="viewDocumentDescription"></p>
-                            </div>
-                            <div class="mb-2">
-                                <span class="text-muted">Danh mục:</span>
-                                <span class="ms-2" id="viewDocumentCategory"></span>
-                            </div>
-                            <div class="mb-2">
-                                <span class="text-muted">Môn học:</span>
-                                <span class="ms-2" id="viewDocumentSubject"></span>
-                            </div>
-                            <div class="mb-2">
-                                <span class="text-muted">Lớp học:</span>
-                                <span class="ms-2" id="viewDocumentClass"></span>
-                            </div>
-                            <div>
-                                <span class="text-muted">Ngày tải lên:</span>
-                                <span class="ms-2" id="viewDocumentDate"></span>
-                            </div>
+    </section>
+    
+    <!-- Learners Section -->
+    <section class="learners-section py-5 bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <div class="learners-illustration position-relative">
+                        <div class="laptop-illustration">
+                            <img src="layout/img/student1.jpg" alt="Laptop with learning content" class="img-fluid">
                         </div>
-                        <div class="col-md-4 text-md-end">
-                            <a href="#" class="btn btn-outline-primary me-2" id="viewDownloadBtn">
-                                <i class="fas fa-download me-2"></i>Tải xuống
-                            </a>
-
+                        
+                        <div class="decorative-burst">
+                            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M60,0 L70,50 L120,60 L70,70 L60,120 L50,70 L0,60 L50,50 Z" fill="#FDCB6E" opacity="0.7"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="decorative-triangle">
+                            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20,0 L40,40 L0,40 Z" stroke="#343A40" stroke-width="2" fill="none"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="decorative-megaphone">
+                            <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10,30 L40,10 L40,50 Z" stroke="#343A40" stroke-width="2" fill="none"/>
+                                <path d="M40,20 Q50,25 40,30" stroke="#343A40" stroke-width="2" fill="none"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="decorative-telescope">
+                            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="25" cy="15" r="10" stroke="#343A40" stroke-width="2" fill="none"/>
+                                <path d="M5,35 L20,20" stroke="#343A40" stroke-width="2" fill="none"/>
+                            </svg>
                         </div>
                     </div>
-                    <!-- <div class="document-preview bg-light p-3 text-center">
-                        <div id="documentPreviewContent"> -->
-                            <!-- Nội dung xem trước sẽ được thêm bởi JavaScript -->
-                        <!-- </div>
-                    </div> -->
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                
+                <div class="col-lg-6 order-lg-1">
+                    <div class="learners-content pe-lg-5">
+                        <div class="small text-uppercase fw-bold mb-2 category-label">HỌC VIÊN VÀ SINH VIÊN</div>
+                        <h2 class="display-5 fw-bold mb-4 text-dark">Bạn có thể học bất cứ điều gì.</h2>
+                        <p class="mb-4">Xây dựng nền tảng kiến thức vững chắc về toán học, khoa học và nhiều lĩnh vực khác.</p>
+                    </div>
                 </div>
+                
             </div>
         </div>
-    </div>
+    </section>

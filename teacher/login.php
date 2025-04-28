@@ -22,7 +22,7 @@ if(isset($_POST['dangnhap'])) {
         session_regenerate_id(true);
         
         if ($userInfo['role'] == 'teacher') { 
-            header('Location: documents.php'); 
+            header('Location: index.php'); 
         } elseif ($userInfo['role'] == 'student') {
             header('Location: login.php'); 
         } else {

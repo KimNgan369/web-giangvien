@@ -1,162 +1,376 @@
 <?php
-session_start();
-ob_start();
 
-if (isset($_SESSION["role"]) && $_SESSION["role"] == 'teacher') {
-    include "header.php";
+include_once "models/pdo.php"; 
+include_once "models/doc.php"; 
+
+// Xử lý khi gửi form upload
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
+    $errors = [];
+
+    $documentName = $_POST['documentName'] ?? '';
+    $documentDescription = $_POST['documentDescription'] ?? '';
+    $documentDanhmuc = $_POST['documentDanhmuc'] ?? '';
+    $classId = $_POST['classId'] ?? null;
+    $documentClass = $_POST['documentClass'] ?? '';
+
+    // Truy vấn tên môn học
+    if ($classId) {
+        $pdo = pdo_get_connection();
+        $stmt = $pdo->prepare("SELECT name FROM myclass WHERE class_id = :class_id");
+        $stmt->execute([':class_id' => $classId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $documentMonhoc = $row ? $row['name'] : '';
+    } else {
+        $documentMonhoc = '';
+    }
+
+    // Đảm bảo rằng tất cả các trường bắt buộc đã được điền
+    if (empty($documentName) || empty($classId) || empty($documentDanhmuc) || empty($documentClass)) {
+        $errors[] = "Vui lòng điền đủ thông tin!";
+    }
+
+    // Xử lý file tải lên
+    $errors = []; // Đảm bảo mảng lỗi được khởi tạo
+    $savedFileName = ""; // Tên file lưu vào DB
+
+    if (isset($_FILES['documentFile']) && $_FILES['documentFile']['error'] === 0) {
+        $fileName = basename($_FILES['documentFile']['name']);
+        $fileTmpName = $_FILES['documentFile']['tmp_name'];
+        $fileSize = $_FILES['documentFile']['size'];
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        // Xác định định dạng tài liệu từ đuôi file
+        switch ($fileExtension) {
+            case 'pdf':
+                $documentFormat = 'PDF';
+                break;
+            case 'doc':
+            case 'docx':
+                $documentFormat = 'DOCX';
+                break;
+            case 'ppt':
+            case 'pptx':
+                $documentFormat = 'PPTX';
+                break;
+            case 'xls':
+            case 'xlsx':
+                $documentFormat = 'Excel';
+                break;
+            default:
+                $documentFormat = 'Unknown';
+                break;
+        }
+
+        // Kiểm tra loại file hợp lệ
+        $allowedFileTypes = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx'];
+        if (!in_array($fileExtension, $allowedFileTypes)) {
+            $errors[] = "Chỉ cho phép tải lên các file PDF, DOC, DOCX, PPT, PPTX, Excel!";
+        } else {
+            // Tạo thư mục nếu chưa có
+            if (!is_dir('uploads')) {
+                mkdir('uploads', 0777, true);
+            }
+
+            $newFileName = time() . '_' . $fileName;
+            $filePath = 'uploads/' . $newFileName;
+
+            if (move_uploaded_file($fileTmpName, $filePath)) {
+                $savedFileName = $newFileName; // Chỉ lưu tên file (không có 'uploads/')
+            } else {
+                $errors[] = "Lỗi khi lưu tệp!";
+                error_log("Không thể di chuyển file từ $fileTmpName đến $filePath");
+            }
+        }
+    } else {
+        $errors[] = "Vui lòng chọn file tài liệu!";
+    }
+
+    // Nếu không có lỗi thì lưu vào database
+    if (empty($errors)) {
+        $uploaderId = $_SESSION['user_id'] ?? null;
+        $fileSize = $_FILES['documentFile']['size'];
+
+        if ($uploaderId && insert_document(
+            $documentName,
+            $documentDescription,
+            $documentFormat,
+            $documentDanhmuc,
+            $documentClass,
+            $documentMonhoc,
+            $savedFileName, // chỉ lưu tên file
+            $uploaderId,
+            $classId,
+            $fileSize
+        )) {
+            echo "<div class='alert alert-success'>Tải tài liệu thành công!</div>";
+            header("Location: index.php?act=mydocuments");
+            exit;
+        } else {
+            echo "<div class='alert alert-danger'>Lỗi khi tải tài liệu!</div>";
+        }
+    } else {
+        foreach ($errors as $error) {
+            echo "<div class='alert alert-danger'>$error</div>";
+        }
+    }
+}
+
+// Xử lý xóa tài liệu
+if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
+    $documentId = (int)$_GET['id']; // Ép kiểu để tránh SQL injection
+    $document = get_document_by_id($documentId);
+    
+    if (!$document) {
+        $_SESSION['error'] = "Tài liệu không tồn tại!";
+        header("Location: index.php?act=mydocuments");
+        exit;
+    }
+
+    // Kiểm tra quyền sở hữu
+    if ($document['uploader_id'] != $_SESSION['user_id']) {
+        $_SESSION['error'] = "Bạn không có quyền xóa tài liệu này!";
+        header("Location: index.php?act=mydocuments");
+        exit;
+    }
+
+    // Xóa file vật lý trước
+    if (file_exists($document['file_path']) && !unlink($document['file_path'])) {
+        $_SESSION['error'] = "Không thể xóa file vật lý!";
+        header("Location: index.php?act=mydocuments");
+        exit;
+    }
+
+    // Xóa từ database
+    if (delete_document($documentId)) {
+        $_SESSION['message'] = "Xóa tài liệu thành công!";
+    } else {
+        $_SESSION['error'] = "Lỗi khi xóa dữ liệu từ database! Chi tiết: " . $conn->errorInfo()[2];
+    }
+    
+    header("Location: index.php?act=mydocuments");
+    exit;
+}
+
+// Phân trang
+$itemsPerPage = 5; // Số item mỗi trang
+$currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$offset = ($currentPage - 1) * $itemsPerPage;
+
+// Lấy tổng số tài liệu
+$totalDocuments = count_documents($_SESSION['user_id']); // Bạn cần tạo hàm này trong models/doc.php
+
+// Tính tổng số trang
+$totalPages = ceil($totalDocuments / $itemsPerPage);
+
+// Lấy dữ liệu cho trang hiện tại
+$documents = get_documents_paginated($_SESSION['user_id'], $offset, $itemsPerPage); // Thay thế hàm get_all_documents()
 ?>
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giới Thiệu Giảng Viên | For Education</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="../layout/css/about.css" rel="stylesheet">
+<!-- HTML Body -->
+<div class="container my-4">
+    <?php if (isset($_SESSION['message'])): ?>
+        <div class="alert alert-success"><?= $_SESSION['message'] ?></div>
+        <?php unset($_SESSION['message']); ?>
+    <?php endif; ?>
+    
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="alert alert-danger"><?= $_SESSION['error'] ?></div>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+    
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-3">Tài liệu của tôi</h2>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <button class="btn btn-warning text-dark" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                <i class="fas fa-plus me-2"></i>Upload tài liệu
+            </button>
+        </div>
+    </div>
 
-</head>
-<body>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" id="documentsTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Tên tài liệu</th>
+                            <th>Định dạng</th>
+                            <th>Ngày tải lên</th>
+                            <th>Kích thước</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($documents as $index => $doc): ?>
+                            <?php 
+                            $filePath = $doc['file_path'];
+                            $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                            switch ($fileExtension) {
+                                case 'pdf':
+                                    $fileIcon = '<i class="fas fa-file-pdf text-danger me-2 fs-4"></i>';
+                                    break;
+                                case 'doc':
+                                case 'docx':
+                                    $fileIcon = '<i class="fas fa-file-word text-primary me-2 fs-4"></i>';
+                                    break;
+                                case 'ppt':
+                                case 'pptx':
+                                    $fileIcon = '<i class="fas fa-file-powerpoint text-warning me-2 fs-4"></i>';
+                                    break;
+                                default:
+                                    $fileIcon = '<i class="fas fa-file text-secondary me-2 fs-4"></i>';
+                            }
+                            ?>
+                            <tr>
+                                <td><?= $index + 1 ?></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <?= $fileIcon ?>
+                                        <div>
+                                            <div class="fw-bold"><?= htmlspecialchars($doc['title']) ?></div>
+                                            <div class="text-muted small">Môn: <?= htmlspecialchars($doc['monhoc']) ?> | Lớp: <?= htmlspecialchars($doc['lophoc']) ?></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-<?= $fileExtension == 'pdf' ? 'danger' : ($fileExtension == 'doc' || $fileExtension == 'docx' ? 'primary' : 'warning') ?>"><?= strtoupper($fileExtension) ?></span></td>
+                                <td><?= date('d/m/Y', strtotime($doc['upload_date'])) ?></td>
+                                <td>
+                                    <?= format_file_size($doc['file_size']) ?>
+                                </td>
+                                <td>
+                                    <div class="d-flex">
+                                        <button class="btn btn-sm btn-outline-danger delete-btn" 
+                                                data-id="<?= $doc['id'] ?>" 
+                                                data-name="<?= htmlspecialchars($doc['title']) ?>">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<main class="container my-5">
-    <div class="row justify-content-center">
-        <!-- Main Profile -->
-        <div class="col-lg-10 col-xl-8">
-            <form id="profileForm">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-md-4 text-center mb-3 mb-md-0">
-                                <img src="../layout/img/teacher1.jpg" class="img-fluid rounded-circle border border-4 border-primary" width="200" height="200" alt="Giảng viên">
-                            </div>
-                            <div class="col-md-8">
-                                <h1 class="mb-1 editable" contenteditable="false">TS. Nguyễn Văn A</h1>
-                                <p class="text-muted mb-2"><i class="fas fa-graduation-cap me-2 text-primary"></i><span class="editable" contenteditable="false">Tiến sĩ Toán học ứng dụng</span></p>
-                                <p class="mb-3"><i class="fas fa-university me-2 text-primary"></i><span class="editable" contenteditable="false">Khoa Toán - Tin, Đại học For Education</span></p>
-
-                                <div class="social-links">
-                                    <a href="#" class="btn btn-sm btn-outline-primary me-2"><i class="fab fa-facebook-f"></i></a>
-                                </div>
-                            </div>
-                        </div>
+<!-- Upload Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-cloud-upload-alt me-2"></i>Tải lên tài liệu mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="documentName" class="form-label">Tên tài liệu</label>
+                        <input type="text" class="form-control" name="documentName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="documentDescription" class="form-label">Mô tả</label>
+                        <textarea class="form-control" name="documentDescription"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="documentDanhmuc" class="form-label">Danh mục</label>
+                        <select class="form-select" name="documentDanhmuc" required>
+                            <option value="">Chọn danh mục</option>
+                            <option value="Bài giảng">Bài giảng</option>
+                            <option value="Đề thi">Đề thi</option>
+                            <option value="Tài liệu tham khảo">Tài liệu tham khảo</option>
+                            <option value="Bài tập">Bài tập</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="classId" class="form-label">Môn học</label>
+                        <select class="form-select" name="classId" required>
+                            <option value="">Chọn môn học</option>
+                            <?php foreach ($classes as $class): ?>
+                                <option value="<?= $class['class_id'] ?>"><?= htmlspecialchars($class['name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="documentClass" class="form-label">Lớp học</label>
+                        <select class="form-select" name="documentClass" required>
+                            <option value="">Chọn lớp học</option>
+                            <option value="KHMT-K27">KHMT-K27</option>
+                            <option value="KTPM-K27">KTPM-K27</option>
+                            <option value="MMT-K27">MMT-K27</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="documentFile" class="form-label">Chọn file</label>
+                        <input class="form-control" type="file" name="documentFile" required>
                     </div>
                 </div>
-
-                <!-- Thông tin chi tiết -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Thông tin chi tiết</h5>
-                    </div>
-                    <div class="card-body">
-                        <!-- Giới thiệu -->
-                        <div class="mb-4">
-                            <h6 class="fw-bold text-primary mb-3"><i class="fas fa-user-tie me-2"></i>Giới thiệu</h6>
-                            <p class="mb-0 editable" contenteditable="false">
-                                Tiến sĩ Nguyễn Văn A là giảng viên có hơn 15 năm kinh nghiệm giảng dạy và nghiên cứu trong lĩnh vực Toán học ứng dụng. Thầy đã công bố nhiều bài báo khoa học trên các tạp chí quốc tế uy tín và tham gia nhiều dự án nghiên cứu cấp Nhà nước.
-                            </p>
-                        </div>
-
-                        <!-- Trình độ -->
-                        <div class="mb-4">
-                            <h6 class="fw-bold text-primary mb-3"><i class="fas fa-graduation-cap me-2"></i>Trình độ</h6>
-                            <ul class="list-unstyled editable-list">
-                                <li class="mb-2"><i class="fas fa-check-circle me-2 text-accent"></i><span contenteditable="false">Tiến sĩ Toán học ứng dụng - Đại học Paris 6 (2010)</span></li>
-                                <li class="mb-2"><i class="fas fa-check-circle me-2 text-accent"></i><span contenteditable="false">Thạc sĩ Toán học - Đại học Quốc gia Hà Nội (2005)</span></li>
-                                <li class="mb-2"><i class="fas fa-check-circle me-2 text-accent"></i><span contenteditable="false">Cử nhân Sư phạm Toán - Đại học Sư phạm Hà Nội (2002)</span></li>
-                            </ul>
-                        </div>
-
-                        <!-- Kinh nghiệm -->
-                        <div class="mb-4">
-                            <h6 class="fw-bold text-primary mb-3"><i class="fas fa-briefcase me-2"></i>Kinh nghiệm giảng dạy</h6>
-                            <ul class="list-unstyled editable-list">
-                                <li class="mb-2">
-                                    <div class="fw-bold" contenteditable="false">Giảng viên chính</div>
-                                    <div class="text-muted" contenteditable="false">Khoa Toán - Tin, Đại học For Education (2010 - nay)</div>
-                                </li>
-                                <li class="mb-2">
-                                    <div class="fw-bold" contenteditable="false">Giảng viên thỉnh giảng</div>
-                                    <div class="text-muted" contenteditable="false">Đại học Bách Khoa Hà Nội (2015 - 2018)</div>
-                                </li>
-                                <li class="mb-2">
-                                    <div class="fw-bold" contenteditable="false">Trợ giảng</div>
-                                    <div class="text-muted" contenteditable="false">Đại học Paris 6 (2008 - 2010)</div>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Nghiên cứu & Dự án -->
-                        <div class="mb-4">
-                            <h6 class="fw-bold text-primary mb-3"><i class="fas fa-project-diagram me-2"></i>Nghiên cứu & Dự án</h6>
-                            <div class="accordion" id="researchAccordion">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingOne">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Ứng dụng Toán học trong AI (2020-2022)
-                                        </button>
-                                    </h2>
-                                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#researchAccordion">
-                                        <div class="accordion-body editable" contenteditable="false">
-                                            Nghiên cứu ứng dụng các phương pháp toán học trong phát triển thuật toán AI. Dự án hợp tác với Đại học Bách Khoa Hà Nội và một số doanh nghiệp công nghệ.
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="headingTwo">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                            Mô hình hóa hệ thống phức tạp (2017-2019)
-                                        </button>
-                                    </h2>
-                                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#researchAccordion">
-                                        <div class="accordion-body editable" contenteditable="false">
-                                            Nghiên cứu phát triển các mô hình toán học để mô phỏng hệ thống phức tạp trong kinh tế và xã hội. Đề tài cấp Nhà nước.
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Nút Chỉnh sửa -->
-                        <div class="text-end mt-4">
-                            <button type="button" id="editBtn" class="btn btn-warning">Chỉnh sửa thông tin</button>
-                            <button type="submit" id="saveBtn" class="btn btn-success d-none">Lưu thay đổi</button>
-                        </div>
-                    </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" name="submit" class="btn btn-primary">Tải lên</button>
                 </div>
             </form>
         </div>
     </div>
-</main>
+</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    const editBtn = document.getElementById('editBtn');
-    const saveBtn = document.getElementById('saveBtn');
-    const editableFields = document.querySelectorAll('.editable, .editable-list span, .editable-list div');
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-exclamation-triangle text-danger me-2"></i>Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa tài liệu <strong id="deleteDocumentName"></strong>?</p>
+                <p class="text-danger">Lưu ý: Hành động này không thể hoàn tác.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                <a href="#" class="btn btn-danger" id="confirmDeleteBtn">Xóa</a>
+            </div>
+        </div>
+    </div>
+</div>
 
-    editBtn.addEventListener('click', () => {
-        editableFields.forEach(el => el.contentEditable = true);
-        editBtn.classList.add('d-none');
-        saveBtn.classList.remove('d-none');
-    });
-
-    saveBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        editableFields.forEach(el => el.contentEditable = false);
-        editBtn.classList.remove('d-none');
-        saveBtn.classList.add('d-none');
-        // TODO: Gửi dữ liệu về server bằng AJAX nếu muốn
-    });
-</script>
-</body>
-</html>
-
-<?php 
-} else {
-    header('location: login.php');
-    exit;
-}
-include "footer.php";
-?>
+<!-- Phân trang -->
+<nav aria-label="Phân trang tài liệu">
+    <ul class="pagination justify-content-center">
+        <li class="page-item <?= ($currentPage <= 1) ? 'disabled' : '' ?>">
+            <a class="page-link" href="?act=mydocuments&page=<?= $currentPage - 1 ?>">Trước</a>
+        </li>
+        
+        <?php 
+        // Hiển thị tối đa 5 trang xung quanh trang hiện tại
+        $startPage = max(1, $currentPage - 2);
+        $endPage = min($totalPages, $currentPage + 2);
+        
+        // Luôn hiển thị trang đầu nếu cần
+        if ($startPage > 1) {
+            echo '<li class="page-item"><a class="page-link" href="?act=mydocuments&page=1">1</a></li>';
+            if ($startPage > 2) echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+        }
+        
+        for ($i = $startPage; $i <= $endPage; $i++): ?>
+            <li class="page-item <?= ($i === $currentPage) ? 'active' : '' ?>">
+                <a class="page-link" href="?act=mydocuments&page=<?= $i ?>"><?= $i ?></a>
+            </li>
+        <?php endfor; 
+        
+        // Luôn hiển thị trang cuối nếu cần
+        if ($endPage < $totalPages) {
+            if ($endPage < $totalPages - 1) echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+            echo '<li class="page-item"><a class="page-link" href="?act=mydocuments&page='.$totalPages.'">'.$totalPages.'</a></li>';
+        }
+        ?>
+        
+        <li class="page-item <?= ($currentPage >= $totalPages) ? 'disabled' : '' ?>">
+            <a class="page-link" href="?act=mydocuments&page=<?= $currentPage + 1 ?>">Tiếp</a>
+        </li>
+    </ul>
+</nav>

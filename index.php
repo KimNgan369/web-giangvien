@@ -15,50 +15,46 @@ if (!isset($_GET['act'])) {
     include "view/home.php";
 } else {
     switch ($_GET['act']) {
-        // case 'shop':
-        //     $dssp=get_dssp(6);
-        //     include "view/shop.php";
-        //     break;
-        // case 'gioithieu':
-        //     include "view/gioithieu.php";
-        //     break;
-        // case 'login':
-        //     // Nếu đã đăng nhập thì chuyển về trang chủ
-        //     if (isset($_SESSION['username']) && ($_SESSION['username'] != "")) {
-        //         header('location: index.php');
-        //         exit;
-        //     }
+        case 'gioithieu':
+            include "view/gioithieu.php";
+            break;
+        case 'login':
+            // Nếu đã đăng nhập thì chuyển về trang chủ
+            if (isset($_SESSION['username']) && ($_SESSION['username'] != "")) {
+                header('location: index.php');
+                exit;
+            }
             
-        //     $error = '';
-        //     if (isset($_POST['login']) && ($_POST['login'])) {
-        //         $username = $_POST['username'];
-        //         $password = $_POST['password'];
+            $error = '';
+            if (isset($_POST['login']) && ($_POST['login'])) {
+                $username = $_POST['username'];
+                $password = $_POST['password'];
                 
-        //         $userInfo = checkuser($username, $password);
+                $userInfo = checkuser($username, $password);
                 
-        //         if ($userInfo) {
-        //             // Đăng nhập thành công
-        //             $_SESSION['role'] = $userInfo['role'];
-        //             $_SESSION['iduser'] = $userInfo['id'];
-        //             $_SESSION['username'] = $userInfo['username'];
+                if ($userInfo) {
+                    // Đăng nhập thành công
+                    $_SESSION['role'] = $userInfo['role'];
+                    $_SESSION['iduser'] = $userInfo['id'];
+                    $_SESSION['username'] = $userInfo['username'];
                     
-        //             // Regenerate session ID để tăng cường bảo mật
-        //             session_regenerate_id(true);
+                    // Regenerate session ID để tăng cường bảo mật
+                    session_regenerate_id(true);
                     
-        //             if ($userInfo['role'] == 'teacher') {
-        //                 header('location: teacher/index.php');
-        //             } else if ($userInfo['role'] == 'admin') {
-        //                 header('location: admin/index.php');
-        //             } else {
-        //                 header('location: index.php');
-        //             }
-        //             exit;
-        //         } else {
-        //             $error = 'Tên đăng nhập hoặc mật khẩu không đúng!';
-        //         }
-        //     }
-        //     include "view/login.php";
-        //     break;
+                    if ($userInfo['role'] == 'teacher') {
+                        header('location: teacher/index.php?act=mydocuments');
+                    } else if ($userInfo['role'] == 'admin') {
+                        header('location: admin/index.php');
+                    } else {
+                        header('location: index.php');
+                    }
+                    exit;
+                } else {
+                    $error = 'Tên đăng nhập hoặc mật khẩu không đúng!';
+                }
+            }
+            include "view/login.php";
+            break;
             
         case 'logout':
             if(isset($_SESSION['role'])) {
@@ -75,6 +71,24 @@ if (!isset($_GET['act'])) {
             $classes = get_myclass();
             include "view/myclass.php";
             break;
+
+        case'khoahoc':
+            $classes = get_myclass();
+            include "view/myclass.php";
+            break;
+        
+        case'logo':
+            include "view/home.php";
+            break;
+    
+        case'userinfo':
+            include "view/profile.php";
+            break;
+        
+        // case 'mydocuments':
+        //     include "teacher/documents.php"; // documents.php sẽ không include header/footer nữa
+        //     break;
+
         case 'tailieu':
                 // Tạo mảng lọc từ tham số GET
                 $filters = [];
@@ -113,11 +127,46 @@ if (!isset($_GET['act'])) {
                 break;
             
                 
+    
+        case 'status':
+            // Include status model
+            include "models/status.php";
             
-        case'status':
-            include "view/status.php";
+            // Pagination
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $limit = 5; // 5 statuses per page
+            $offset = ($page - 1) * $limit;
+            
+            // Get statuses for current page
+            $statuses = getAllStatuses($limit, $offset);
+            $totalStatuses = countStatuses();
+            $totalPages = ceil($totalStatuses / $limit);
+            
+            // Check role for appropriate view/edit permissions
+            // if (isset($_SESSION["role"])) {
+            //     if ($_SESSION["role"] == 'teacher') {
+            //         // Teachers get the edit view
+            //         include "teacher/view/status.php";
+            //     } else if ($_SESSION["role"] == 'student') {
+            //         // Students get the view-only version
+                    include "student/view/status.php";
+                // } else {
+                //     // Handle other roles if needed
+                //     header('location: index.php?act=login');
+                //     exit;
+                // }
+            // } else {
+            //     // Not logged in
+            //     header('location: index.php?act=login');
+            //     exit;
+            // }
+            
             break;
-            
+
+        case'about':
+            include "student/view/about.php";
+            break;
+
         default:
             include "view/home.php";
             break;

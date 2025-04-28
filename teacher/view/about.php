@@ -1,9 +1,9 @@
 <?php
-session_start();
+// session_start();
 ob_start();
 
-if (isset($_SESSION["role"]) && $_SESSION["role"] == 'teacher') {
-    include "header.php";
+// Check if user is logged in
+if (isset($_SESSION["role"])) {
 
     $default_profile = [
         "name" => "TS. Nguyễn Văn A",
@@ -17,7 +17,10 @@ if (isset($_SESSION["role"]) && $_SESSION["role"] == 'teacher') {
     ];
     
     $teacher = array_merge($default_profile, $_SESSION['teacher_profile'] ?? []);    
-    $isEditing = isset($_GET['edit']) && $_GET['edit'] == '1';
+    
+    // Only teachers can edit - determine if we're in edit mode
+    $isTeacher = ($_SESSION["role"] == 'teacher');
+    $isEditing = $isTeacher && isset($_GET['edit']) && $_GET['edit'] == '1';
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +41,7 @@ if (isset($_SESSION["role"]) && $_SESSION["role"] == 'teacher') {
 
             <?php if ($isEditing): ?>
             <!-- Chế độ chỉnh sửa -->
-            <form method="post" action="save_profile.php" enctype="multipart/form-data">
+            <form method="post" action="save_about.php" enctype="multipart/form-data">
                 <div class="card shadow-sm mb-4">
                     <div class="card-body">
                         <div class="row align-items-center">
@@ -198,7 +201,7 @@ if (isset($_SESSION["role"]) && $_SESSION["role"] == 'teacher') {
             </div>
 
             <div class="text-end mb-5">
-                <a href="about.php?edit=1" class="btn btn-primary">Chỉnh sửa</a>
+                <a href="view/about.php?edit=1" class="btn btn-primary">Chỉnh sửa</a>
             </div>
 
             <?php endif; ?>
@@ -206,7 +209,6 @@ if (isset($_SESSION["role"]) && $_SESSION["role"] == 'teacher') {
     </div>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 function addProject() {
     const index = document.querySelectorAll('#researchProjects .accordion-item').length;
@@ -265,5 +267,4 @@ function previewAvatar(event) {
     header("Location: login.php");
     exit;
 }
-include "footer.php";
 ?>

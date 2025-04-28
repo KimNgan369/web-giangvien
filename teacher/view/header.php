@@ -11,6 +11,8 @@
     <link href="../layout/css/status.css" rel="stylesheet">
     <link href="../layout/css/about.css" rel="stylesheet">
     <link href="../layout/css/documents.css" rel="stylesheet">
+    <link href="../layout/css/myclass.css" rel="stylesheet">
+    <link href="../layout/css/DocumentListPage.css" rel="stylesheet">
     <link rel="icon" href="../img/logo.png" type="logoF/png">
 
 
@@ -34,16 +36,16 @@
                 <!-- Thêm các liên kết vào đây -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Giới thiệu</a>
+                        <a class="nav-link" href="index.php?act=about">Giới thiệu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Tài liệu</a>
+                        <a class="nav-link" href="index.php?act=tailieu">Tài liệu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Khóa học</a>
+                        <a class="nav-link" href="index.php?act=khoahoc">Khóa học</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Bảng tin</a>
+                    <a class="nav-link" href="index.php?act=status">Bảng tin</a>
                     </li>
                 </ul>
                 

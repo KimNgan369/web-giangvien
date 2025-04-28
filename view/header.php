@@ -16,7 +16,7 @@
         <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
+            <a class="navbar-brand d-flex align-items-center" href="index.php?act=logo">
                 <div class="logo-container me-2">
                     <img src="layout/img/logoF.png" width="50" height="50" alt="icon" />
                 </div>
@@ -31,13 +31,13 @@
                 <!-- Thêm các liên kết vào đây -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Giới thiệu</a>
+                        <a class="nav-link" href="index.php?act=about">Giới thiệu</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?act=tailieu">Tài liệu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Khóa học</a>
+                        <a class="nav-link" href="index.php?act=khoahoc">Khóa học</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?act=status">Bảng tin</a>

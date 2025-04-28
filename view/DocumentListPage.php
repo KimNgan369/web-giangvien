@@ -161,7 +161,8 @@ if (!empty($filters['thoigian'])) $current_url .= '&thoigian=' . urlencode($filt
                                         </div>
                                     </div>
                                     <div class="col-md-4 text-md-end document-actions">
-                                        <a href="/giuaki/web-giangvien/models/download.php?id=<?= $doc['id'] ?>" class="btn btn-sm btn-download">
+                                        <!-- dat dung duong dan nhe -->
+                                        <a href="../edu/models/download.php?id=<?= $doc['id'] ?>" class="btn btn-sm btn-download">
                                             <i class="fas fa-download me-1"></i> Download
                                         </a>
                                     </div>
