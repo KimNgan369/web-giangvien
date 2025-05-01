@@ -43,7 +43,8 @@ if (isset($_SESSION["role"]) && ($_SESSION["role"] == 'teacher')) {
                 $totalStatuses = countStatuses();
                 $totalPages = ceil($totalStatuses / $limit);
                 
-                include "view/status.php"; // Display statuses with pagination
+                header('location: ../index.php?act=status');
+                // include "../view/status.php"; // Display statuses with pagination
                 break;
 
             case 'mydocuments':

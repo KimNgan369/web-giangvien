@@ -15,10 +15,7 @@ if (!isset($_GET['act'])) {
     include "view/home.php";
 } else {
     switch ($_GET['act']) {
-        // case 'shop':
-        //     $dssp=get_dssp(6);
-        //     include "view/shop.php";
-        //     break;
+
         case 'gioithieu':
             include "view/gioithieu.php";
             break;
@@ -46,7 +43,7 @@ if (!isset($_GET['act'])) {
                     session_regenerate_id(true);
                     
                     if ($userInfo['role'] == 'teacher') {
-                        header('location: teacher/index.php');
+                        header('location: teacher/index.php?act=mydocuments');
                     } else if ($userInfo['role'] == 'admin') {
                         header('location: admin/index.php');
                     } else {
@@ -69,6 +66,10 @@ if (!isset($_GET['act'])) {
             }
             header('location: index.php');
             exit;
+            break;
+
+        case 'mydocuments':
+            header('location: teacher/index.php?act=mydocuments');
             break;
 
         case'myclasses':
@@ -146,29 +147,12 @@ if (!isset($_GET['act'])) {
             $totalStatuses = countStatuses();
             $totalPages = ceil($totalStatuses / $limit);
             
-            // Check role for appropriate view/edit permissions
-            // if (isset($_SESSION["role"])) {
-            //     if ($_SESSION["role"] == 'teacher') {
-            //         // Teachers get the edit view
-            //         include "teacher/view/status.php";
-            //     } else if ($_SESSION["role"] == 'student') {
-            //         // Students get the view-only version
-                    include "student/view/status.php";
-                // } else {
-                //     // Handle other roles if needed
-                //     header('location: index.php?act=login');
-                //     exit;
-                // }
-            // } else {
-            //     // Not logged in
-            //     header('location: index.php?act=login');
-            //     exit;
-            // }
-            
+            // header('location: student/view/status1.php');
+            include "view/status.php";
             break;
 
         case'about':
-            include "student/view/about.php";
+            include "view/about.php";
             break;
 
         default:

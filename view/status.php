@@ -1,12 +1,4 @@
 <?php
-// session_start();
-ob_start();
-
-if (isset($_SESSION["role"]) && $_SESSION["role"] == 'teacher') {
-// include "header.php";
-require_once 'teacher/models/pdo.php';
-require_once 'teacher/models/status.php';
-require_once 'teacher/models/user.php';
 
 // Start the session if not already started
 if (session_status() === PHP_SESSION_NONE) {
@@ -21,12 +13,12 @@ if ($isLoggedIn) {
     $currentUser = getUserById($_SESSION['user_id']);
 }
 
-// Handle form submissions
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Handle form submissions (only for teacher role)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION["role"]) && $_SESSION["role"] == 'teacher') {
     // Create new status
     if (isset($_POST['action']) && $_POST['action'] === 'create_status') {
         if (!$isLoggedIn) {
-            header('Location: login.php');
+            header('Location: index.php?act=login');
             exit;
         }
         
@@ -47,14 +39,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $upload_path = $upload_dir . $file_name;
             
             if (move_uploaded_file($_FILES['image']['tmp_name'], $upload_path)) {
-                $image_path = 'uploads/status/' . $file_name;
+                // $image_path = $upload_path;
+                // Lưu đường dẫn tương đối từ gốc ứng dụng (project/) vào database
+                $image_path = '../uploads/status/' . $file_name;
             }
         }
         
         if (!empty($content)) {
             if (createStatus($_SESSION['user_id'], $content, $image_path)) {
                 // Redirect to prevent form resubmission
-                header('Location: status.php?success=posted');
+                header('Location: index.php?act=status&success=posted');
                 exit;
             } else {
                 $error = "Không thể đăng trạng thái. Vui lòng thử lại.";
@@ -67,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Delete status
     if (isset($_POST['action']) && $_POST['action'] === 'delete_status') {
         if (!$isLoggedIn) {
-            header('Location: login.php');
+            header('Location: index.php?act=login');
             exit;
         }
         
@@ -80,11 +74,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             if (deleteStatus($status_id)) {
                 // Delete image file if exists
-                if (!empty($status['image_path']) && file_exists('../' . $status['image_path'])) {
-                    unlink('../' . $status['image_path']);
+                if (!empty($status['image_path']) && file_exists($status['image_path'])) {
+                    unlink($status['image_path']);
                 }
                 
-                header('Location: status.php?success=deleted');
+                header('Location: index.php?act=status&success=deleted');
                 exit;
             } else {
                 $error = "Không thể xóa trạng thái. Vui lòng thử lại.";
@@ -95,21 +89,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Pagination
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$limit = 5; // 5 statuses per page
-$offset = ($page - 1) * $limit;
-
-// Get statuses for current page
-$statuses = getAllStatuses($limit, $offset);
-$totalStatuses = countStatuses();
-$totalPages = ceil($totalStatuses / $limit);
-
-// Format time function
 function formatTimeAgo($datetime) {
     $now = new DateTime();
     $past = new DateTime($datetime);
     $diff = $now->diff($past);
+    
+    // Tính tổng số giây
+    $totalSeconds = $diff->s + ($diff->i * 60) + ($diff->h * 3600) + ($diff->d * 86400) + ($diff->m * 2592000) + ($diff->y * 31536000);
+    
+    if ($totalSeconds < 5) {
+        return 'Vừa xong';
+    }
     
     if ($diff->y > 0) {
         return $diff->y . ' năm trước';
@@ -127,7 +117,7 @@ function formatTimeAgo($datetime) {
         return $diff->i . ' phút trước';
     }
     
-    return 'Vừa xong';
+    return $diff->s . ' giây trước';
 }
 ?>
 
@@ -138,8 +128,8 @@ function formatTimeAgo($datetime) {
             <h2 class="fw-bold text-dark mb-0"><i class="fas fa-comment-alt me-2 text-primary"></i>Bảng tin</h2>
         </div>
         <div class="col-md-6 text-md-end">
-            <!-- Nút đăng bài chỉ hiển thị cho người dùng đã đăng nhập -->
-            <?php if ($isLoggedIn): ?>
+            <!-- Nút đăng bài chỉ hiển thị cho giáo viên đã đăng nhập -->
+            <?php if ($isLoggedIn && $_SESSION["role"] == 'teacher'): ?>
             <button class="btn btn-primary" id="createPostBtn" data-bs-toggle="modal" data-bs-target="#createPostModal">
                 <i class="fas fa-plus me-1"></i> Đăng bài
             </button>
@@ -178,14 +168,13 @@ function formatTimeAgo($datetime) {
                     <div class="card-body text-center py-5">
                         <i class="fas fa-comment-slash fa-3x text-muted mb-3"></i>
                         <h5>Chưa có bài đăng nào</h5>
-                        <?php if ($isLoggedIn): ?>
+                        <?php if ($isLoggedIn && $_SESSION["role"] == 'teacher'): ?>
                         <p>Hãy là người đầu tiên chia sẻ điều gì đó!</p>
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createPostModal">
                             <i class="fas fa-plus me-1"></i> Đăng bài
                         </button>
                         <?php else: ?>
-                        <p>Đăng nhập để bắt đầu chia sẻ!</p>
-                        <a href="login.php" class="btn btn-primary">Đăng nhập</a>
+                        <p>Chưa có thông báo nào từ giáo viên.</p>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -194,14 +183,14 @@ function formatTimeAgo($datetime) {
                     <div class="card shadow-sm mb-4 post">
                         <div class="card-header bg-white d-flex align-items-center justify-content-between p-3">
                             <div class="d-flex align-items-center">
-                                <img src="<?php echo !empty($status['avatar_path']) ? '../' . $status['avatar_path'] : '../layout/img/teacher1.jpg'; ?>" 
+                                <img src="<?php echo !empty($status['avatar_path']) ? $status['avatar_path'] : 'layout/img/teacher1.jpg'; ?>" 
                                      class="rounded-circle avatar me-3" alt="Avatar" style="width: 40px; height: 40px; object-fit: cover;">
                                 <div>
                                     <h6 class="mb-0 fw-bold"><?php echo htmlspecialchars($status['full_name'] ?? $status['username']); ?></h6>
                                     <small class="text-muted"><?php echo formatTimeAgo($status['created_at']); ?> • <i class="fas fa-globe-asia"></i></small>
                                 </div>
                             </div>
-                            <?php if ($isLoggedIn && $status['user_id'] == $_SESSION['user_id']): ?>
+                            <?php if ($isLoggedIn && $_SESSION["role"] == 'teacher' && $status['user_id'] == $_SESSION['user_id']): ?>
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-light" type="button" id="dropdownMenuButton<?php echo $status['id']; ?>" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-ellipsis-h"></i>
@@ -224,7 +213,7 @@ function formatTimeAgo($datetime) {
                             <p class="card-text"><?php echo nl2br(htmlspecialchars($status['content'])); ?></p>
                             <?php if (!empty($status['image_path'])): ?>
                             <div class="post-image mb-3">
-                                <img src="<?php echo '../' . $status['image_path']; ?>" class="img-fluid rounded" alt="Status image">
+                                <img src="<?php echo $status['image_path']; ?>" class="img-fluid rounded" alt="Status image">
                             </div>
                             <?php endif; ?>
                         </div>
@@ -237,15 +226,15 @@ function formatTimeAgo($datetime) {
                 <nav aria-label="Page navigation">
                     <ul class="pagination justify-content-center">
                         <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="?page=<?php echo $page - 1; ?>" tabindex="-1">Trước</a>
+                            <a class="page-link" href="index.php?act=status&page=<?php echo $page - 1; ?>" tabindex="-1">Trước</a>
                         </li>
                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                         <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
-                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                            <a class="page-link" href="index.php?act=status&page=<?php echo $i; ?>"><?php echo $i; ?></a>
                         </li>
                         <?php endfor; ?>
                         <li class="page-item <?php echo ($page >= $totalPages) ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="?page=<?php echo $page + 1; ?>">Tiếp</a>
+                            <a class="page-link" href="index.php?act=status&page=<?php echo $page + 1; ?>">Tiếp</a>
                         </li>
                     </ul>
                 </nav>
@@ -255,7 +244,7 @@ function formatTimeAgo($datetime) {
     </div>
 </main>
 
-<!-- Modal Đăng bài -->
+<!-- Modal Đăng bài (chỉ hiển thị cho giáo viên) -->
 <div class="modal fade" id="createPostModal" tabindex="-1" aria-labelledby="createPostModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -309,11 +298,3 @@ document.getElementById('removeImage').addEventListener('click', function() {
     document.getElementById('imagePreview').classList.add('d-none');
 });
 </script>
-
-<?php 
-} else {
-    header('location: login.php');
-    exit;
-}
-include "footer.php";
-?>
