@@ -22,7 +22,7 @@ if (!$document) {
 }
 
 // Sửa đường dẫn tại đây
-$filePath = '../teacher/uploads/' . $document['file_path'];
+$filePath = '../uploads/' . $document['file_path'];
 
 if (!file_exists($filePath)) {
     die("File không tồn tại tại: " . htmlspecialchars($filePath));

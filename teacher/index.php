@@ -25,7 +25,7 @@ if (isset($_SESSION["role"]) && ($_SESSION["role"] == 'teacher')) {
                     session_destroy();
                 }
                 header('location: ../index.php');
-                exit; 
+                
                 break;
             
             

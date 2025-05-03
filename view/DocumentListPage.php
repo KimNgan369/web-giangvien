@@ -1,5 +1,6 @@
 <?php
 require_once 'models/tailieu.php';
+require_once 'models/global.php';
 
 // Lấy danh sách môn học duy nhất
 $monhoc_list = pdo_query("SELECT DISTINCT monhoc FROM documents WHERE monhoc IS NOT NULL AND monhoc != ''");
@@ -162,7 +163,7 @@ if (!empty($filters['thoigian'])) $current_url .= '&thoigian=' . urlencode($filt
                                     </div>
                                     <div class="col-md-4 text-md-end document-actions">
                                         <!-- dat dung duong dan nhe -->
-                                        <a href="../edu/models/download.php?id=<?= $doc['id'] ?>" class="btn btn-sm btn-download">
+                                        <a href="<?= $base_url ?>/models/download.php?id=<?= $doc['id'] ?>" class="btn btn-sm btn-download">
                                             <i class="fas fa-download me-1"></i> Download
                                         </a>
                                     </div>
